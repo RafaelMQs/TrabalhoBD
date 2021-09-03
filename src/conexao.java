@@ -4,7 +4,7 @@ import javax.swing.*;
 public class conexao {
 	public Connection conn = null;
 	private final String driver = "com.mysql.jdbc.Driver";
-	private final String dbname = "joguinhos";
+	private final String dbname = "bdjava";
 	private final String url = "jdbc:mysql://localhost:3306/"+dbname;
 	private final String usu = "root";
 	private final String senha = "";
