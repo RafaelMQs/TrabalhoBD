@@ -15,9 +15,9 @@ public class tabela extends JPanel {
 	private JLabel lbDataJogo, lbNomeJogo, lbTipoJogo, lbQuantJogo, lbIdJogo;
 	private JTextField tfDataJogo, tfNomeJogo, tfTipoJogo, tfQuantJogo, tfIdJogo;
 	private JButton btnAvancar, btnRetroceder;
-	
+
 	private JPanel textFields;
-	
+
 	private String selectSql = "SELECT * FROM joguinhos";
 
 	public tabela() {
@@ -32,13 +32,14 @@ public class tabela extends JPanel {
 		scrollTabela = new JScrollPane();
 		scrollTabela.setBounds(15, 185, 515, 183);
 		add(scrollTabela);
-		
+
 		textFields = new JPanel();
 		textFields.setLayout(null);
 		textFields.setBounds(15, 5, 510, 100);
-		textFields.setBorder(new TitledBorder("Itens do Pedido"));
+		textFields.setBorder(BorderFactory.createTitledBorder(null, "Dados da Tabela", TitledBorder.LEFT,
+				TitledBorder.TOP, new Font("Arial", Font.BOLD, 12), Color.black));
 		add(textFields);
-		
+
 		// Criando o Label e o Tf do DateGame
 		lbDataJogo = new JLabel("DateGame:");
 		lbDataJogo.setBounds(5, 25, 65, 25);
@@ -50,7 +51,7 @@ public class tabela extends JPanel {
 		tfDataJogo.setBackground(Color.WHITE);
 		tfDataJogo.setForeground(Color.BLACK);
 		textFields.add(tfDataJogo);
-		
+
 		// Criando o Label e o Tf do NomeJogo
 		lbNomeJogo = new JLabel("NameGame:");
 		lbNomeJogo.setBounds(5, 65, 70, 25);
@@ -62,7 +63,7 @@ public class tabela extends JPanel {
 		tfNomeJogo.setBackground(Color.WHITE);
 		tfNomeJogo.setForeground(Color.BLACK);
 		textFields.add(tfNomeJogo);
-		
+
 		// Criando o Label e o Tf do TipoJogo
 		lbTipoJogo = new JLabel("TypeGame:");
 		lbTipoJogo.setBounds(210, 25, 70, 25);
@@ -74,7 +75,7 @@ public class tabela extends JPanel {
 		tfTipoJogo.setBackground(Color.WHITE);
 		tfTipoJogo.setForeground(Color.BLACK);
 		textFields.add(tfTipoJogo);
-		
+
 		// Criando o Label e o Tf do QuantJogo
 		lbQuantJogo = new JLabel("QuantGame:");
 		lbQuantJogo.setBounds(210, 65, 70, 25);
@@ -86,7 +87,7 @@ public class tabela extends JPanel {
 		tfQuantJogo.setBackground(Color.WHITE);
 		tfQuantJogo.setForeground(Color.BLACK);
 		textFields.add(tfQuantJogo);
-		
+
 		// Criando o Label e o Tf do IdJogo
 		lbIdJogo = new JLabel("IdGame:");
 		lbIdJogo.setBounds(410, 45, 50, 25);
@@ -99,16 +100,49 @@ public class tabela extends JPanel {
 		tfIdJogo.setForeground(Color.BLACK);
 		textFields.add(tfIdJogo);
 		
+		// Criando botão de Retroceder
+		btnRetroceder = new JButton("<");
+		btnRetroceder.setBounds(15, 120, 50, 25);
+		btnRetroceder.setFocusable(false);
+		add(btnRetroceder);
+
+
+		// Criando botão de Avançar
+		btnAvancar = new JButton(">");
+		btnAvancar.setBounds(70, 120, 50, 25);
+		btnAvancar.setFocusable(false);
+		add(btnAvancar);
+
 		conexao = new conexao();
 		executarTabela(selectSql);
 		atualizarCampos();
 	}
 
 	public void Eventos() {
+		btnAvancar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					rs.next();
+					atualizarCampos();
+					System.out.println("asdasd");
+				} catch (SQLException erro) {
+				}
+			}
+		});
+		
+		btnRetroceder.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					rs.previous();
+					atualizarCampos();
+					System.out.println("asdasd");
+				} catch (SQLException erro) {
+				}
+			}
+		});
 
 	}
-	
-	
+
 	public void executarTabela(String sql) {
 		try {
 			if (!conexao.getConnection()) {
@@ -118,16 +152,17 @@ public class tabela extends JPanel {
 			st = conexao.conn.prepareStatement(sql);
 			rs = st.executeQuery();
 
-			DefaultTableModel tableModel = new DefaultTableModel(new String[] {"DateGame", "NameGame", "TypeGame", "QuantGame", "IdGame"}, 0) {
+			DefaultTableModel tableModel = new DefaultTableModel(
+					new String[] { "DateGame", "NameGame", "TypeGame", "QuantGame", "IdGame" }, 0) {
 				public boolean isCellEditable(int row, int col) {
 					return false;
 				}
 			};
 
 			int qtdeColunas = rs.getMetaData().getColumnCount();
-			//for (int indice = 1; indice <= qtdeColunas; indice++) {
-			//	tableModel.addColumn(rs.getMetaData().getColumnName(indice));
-			//}
+			// for (int indice = 1; indice <= qtdeColunas; indice++) {
+			// tableModel.addColumn(rs.getMetaData().getColumnName(indice));
+			// }
 
 			tabela = new JTable(tableModel);
 			tabela.setForeground(Color.BLACK);
@@ -145,18 +180,18 @@ public class tabela extends JPanel {
 				}
 				scrollTabela.setViewportView(tabela);
 			}
-
+			rs.first();
 		} catch (Exception erro) {
 
 		}
 	}
-	
-	public void atualizarCampos(){
-		try{
-			if(rs.isAfterLast()){
+
+	public void atualizarCampos() {
+		try {
+			if (rs.isAfterLast()) {
 				rs.last();
 			}
-			if(rs.isBeforeFirst()){
+			if (rs.isBeforeFirst()) {
 				rs.first();
 			}
 			tfDataJogo.setText(rs.getString("dataJogo"));
@@ -164,10 +199,10 @@ public class tabela extends JPanel {
 			tfTipoJogo.setText(rs.getString("tipoJogo"));
 			tfQuantJogo.setText(rs.getString("quantpJogo"));
 			tfIdJogo.setText(rs.getString("idJogo"));
-		} catch(SQLException erro){
-			
+		} catch (SQLException erro) {
+
 		}
-		
+
 	}
 
 	public static void main(String args[]) {
