@@ -14,11 +14,11 @@ public class tabela extends JPanel {
 	private ResultSet rs;
 	private JLabel lbDataJogo, lbNomeJogo, lbTipoJogo, lbQuantJogo, lbIdJogo;
 	private JTextField tfDataJogo, tfNomeJogo, tfTipoJogo, tfQuantJogo, tfIdJogo;
-	private JButton btnAvancar, btnRetroceder;
+	private JButton btnAvancar, btnRetroceder, btnPrimeiro, btnUltimo, btnMaior, btnMenor;
 
 	private JPanel textFields;
 
-	private String selectSql = "SELECT * FROM joguinhos";
+	private String selectSql = "SELECT * FROM joguinhos", pegarMaxSql;
 
 	public tabela() {
 		Componentes();
@@ -30,7 +30,7 @@ public class tabela extends JPanel {
 		setLayout(null);
 		setFont(new Font("Arial", Font.PLAIN, 12));
 		scrollTabela = new JScrollPane();
-		scrollTabela.setBounds(15, 185, 515, 183);
+		scrollTabela.setBounds(15, 200, 515, 183);
 		add(scrollTabela);
 
 		textFields = new JPanel();
@@ -99,19 +99,42 @@ public class tabela extends JPanel {
 		tfIdJogo.setBackground(Color.WHITE);
 		tfIdJogo.setForeground(Color.BLACK);
 		textFields.add(tfIdJogo);
-		
+
 		// Criando botão de Retroceder
 		btnRetroceder = new JButton("<");
-		btnRetroceder.setBounds(15, 120, 50, 25);
+		btnRetroceder.setBounds(15, 110, 50, 25);
 		btnRetroceder.setFocusable(false);
 		add(btnRetroceder);
 
-
 		// Criando botão de Avançar
 		btnAvancar = new JButton(">");
-		btnAvancar.setBounds(70, 120, 50, 25);
+		btnAvancar.setBounds(70, 110, 50, 25);
 		btnAvancar.setFocusable(false);
 		add(btnAvancar);
+
+		// Criando botão de ir para o Primeiro
+		btnPrimeiro = new JButton("Primeiro");
+		btnPrimeiro.setBounds(15, 140, 105, 25);
+		btnPrimeiro.setFocusable(false);
+		add(btnPrimeiro);
+
+		// Criando botão de ir para o Ultimo
+		btnUltimo = new JButton("Ultimo");
+		btnUltimo.setBounds(15, 170, 105, 25);
+		btnUltimo.setFocusable(false);
+		add(btnUltimo);
+
+		// Criando botão de selecionar Maior
+		btnMaior = new JButton("Maior");
+		btnMaior.setBounds(150, 110, 105, 25);
+		btnMaior.setFocusable(false);
+		add(btnMaior);
+		
+		// Criando botão de selecionar Maior
+		btnMenor = new JButton("Menos");
+		btnMenor.setBounds(150, 140, 105, 25);
+		btnMenor.setFocusable(false);
+		add(btnMenor);
 
 		conexao = new conexao();
 		executarTabela(selectSql);
@@ -124,19 +147,85 @@ public class tabela extends JPanel {
 				try {
 					rs.next();
 					atualizarCampos();
-					System.out.println("asdasd");
 				} catch (SQLException erro) {
 				}
 			}
 		});
-		
+
 		btnRetroceder.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					rs.previous();
 					atualizarCampos();
-					System.out.println("asdasd");
 				} catch (SQLException erro) {
+				}
+			}
+		});
+
+		btnPrimeiro.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					rs.first();
+					atualizarCampos();
+				} catch (SQLException erro) {
+				}
+			}
+		});
+
+		btnUltimo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					rs.last();
+					atualizarCampos();
+				} catch (SQLException erro) {
+				}
+			}
+		});
+
+		btnMaior.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String teste = "SELECT MAX(quantpJogo) from joguinhos";
+					float Max = 0;
+					PreparedStatement stMax = conexao.conn.prepareStatement(teste);
+					ResultSet rsMax = stMax.executeQuery();
+					if (rsMax != null && rsMax.next()) {
+						Max = rsMax.getFloat((rsMax.getMetaData().getColumnName(1)));
+					}
+					selectSql = "SELECT * FROM joguinhos WHERE quantpJogo = '" + Max + "'";
+					st = conexao.conn.prepareStatement(selectSql);
+					rs = st.executeQuery();
+					atualizarCampos();
+
+					selectSql = "SELECT * FROM joguinhos";
+					st = conexao.conn.prepareStatement(selectSql);
+					rs = st.executeQuery();
+				} catch (SQLException erro) {
+					System.out.println(erro);
+				}
+			}
+		});
+		
+		btnMenor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					String teste = "SELECT MIN(quantpJogo) from joguinhos";
+					float Min = 0;
+					PreparedStatement stMin = conexao.conn.prepareStatement(teste);
+					ResultSet rsMin = stMin.executeQuery();
+					if (rsMin != null && rsMin.next()) {
+						Min = rsMin.getFloat((rsMin.getMetaData().getColumnName(1)));
+					}
+					selectSql = "SELECT * FROM joguinhos WHERE quantpJogo = '" + Min + "'";
+					st = conexao.conn.prepareStatement(selectSql);
+					rs = st.executeQuery();
+					atualizarCampos();
+
+					selectSql = "SELECT * FROM joguinhos";
+					st = conexao.conn.prepareStatement(selectSql);
+					rs = st.executeQuery();
+				} catch (SQLException erro) {
+					System.out.println(erro);
 				}
 			}
 		});
@@ -209,7 +298,7 @@ public class tabela extends JPanel {
 		JFrame frame = new JFrame("Tabela - BD");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(new tabela());
-		frame.setSize(560, 420);
+		frame.setSize(560, 430);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
