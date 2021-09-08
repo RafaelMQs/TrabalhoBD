@@ -102,37 +102,37 @@ public class tabela extends JPanel {
 
 		// Criando botão de Retroceder
 		btnRetroceder = new JButton("<");
-		btnRetroceder.setBounds(15, 110, 50, 25);
+		btnRetroceder.setBounds(120, 125, 50, 25);
 		btnRetroceder.setFocusable(false);
 		add(btnRetroceder);
 
 		// Criando botão de Avançar
 		btnAvancar = new JButton(">");
-		btnAvancar.setBounds(70, 110, 50, 25);
+		btnAvancar.setBounds(370, 125, 50, 25);
 		btnAvancar.setFocusable(false);
 		add(btnAvancar);
 
 		// Criando botão de ir para o Primeiro
 		btnPrimeiro = new JButton("Primeiro");
-		btnPrimeiro.setBounds(15, 140, 105, 25);
+		btnPrimeiro.setBounds(420, 110, 105, 25);
 		btnPrimeiro.setFocusable(false);
 		add(btnPrimeiro);
 
 		// Criando botão de ir para o Ultimo
 		btnUltimo = new JButton("Ultimo");
-		btnUltimo.setBounds(15, 170, 105, 25);
+		btnUltimo.setBounds(420, 140, 105, 25);
 		btnUltimo.setFocusable(false);
 		add(btnUltimo);
 
 		// Criando botão de selecionar Maior
 		btnMaior = new JButton("Maior");
-		btnMaior.setBounds(150, 110, 105, 25);
+		btnMaior.setBounds(155, 110, 105, 25);
 		btnMaior.setFocusable(false);
 		add(btnMaior);
 		
-		// Criando botão de selecionar Maior
+		// Criando botão de selecionar Menor
 		btnMenor = new JButton("Menos");
-		btnMenor.setBounds(150, 140, 105, 25);
+		btnMenor.setBounds(15, 140, 105, 25);
 		btnMenor.setFocusable(false);
 		add(btnMenor);
 
